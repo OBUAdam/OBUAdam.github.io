@@ -1,144 +1,290 @@
 <head>
-    <title>Notifications from 1 Day, From App to Hour of Day</title>
-  </head>
+    <title>Sankey Diagrams</title>
+</head>
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<body>
+    <h1 style="font-family: Arial, Helvetica, sans-serif;">Sankey Diagrams</h1>
+    <h2 id="titleHeader" style="font-family: Arial, Helvetica, sans-serif;"></h2>
+    <div style="width: 100%;">
+        <div style="float: left; width: 20%;">
+            <select id="datasets" onchange="datasetChanged(this.value)" style="width: 100%;"></select>
+            <textarea id="datasetText" style="width: 100%; height: 50%; white-space: nowrap;"></textarea>
+            <button onclick="updateDiagram()">Update Diagram</button>
+        </div>
+        <div id="sankey_Notifications" style="margin-left: 20%; width: 80%;"></div>
+    </div>
+</body>
+
 <script>
-    google.charts.load('current', { 'packages': ['sankey'] });
-    google.charts.setOnLoadCallback(drawChart);
+    setUpDataSets();
+    
+    var rawDataSets;
 
-    var rawData = [
-        ['Various Google Alerts', '00H', 3],
-        ['Sleep As Android', '00H', 1],
-        ['Telegram', '00H', 1],
-        ['Accuweather', '01H', 1],
-        ['ATs Weather', '01H', 1],
-        ['Various Google Alerts', '02H', 1],
-        ['Golf Game', '02H', 1],
-        ['Weather Radar App', '02H', 1],
-        ['Various Google Alerts', '03H', 1],
-        ['Twitter', '03H', 1],
-        ['Various Google Alerts', '04H', 2],
-        ['Various Google Alerts', '05H', 2],
-        ['Phone Clock App', '05H', 1],
-        ['Google Clock App', '06H', 1],
-        ['Various Google Alerts', '06H', 1],
-        ['Telegram', '06H', 2],
-        ['Google Clock App', '07H', 1],
-        ['Various Google Alerts', '07H', 2],
-        ['Twitter', '07H', 1],
-        ['Sleep As Android', '07H', 1],
-        ['Various Google Alerts', '08H', 1],
-        ['MS Teams', '08H', 3],
-        ['Sleep As Android', '08H', 2],
-        ['Google Photos', '09H', 1],
-        ['Google Calendar', '09H', 1],
-        ['Google Mobile Services', '09H', 1],
-        ['Various Google Alerts', '09H', 1],
-        ['Amazon Photos', '10H', 2],
-        ['Google Mobile Services', '10H', 1],
-        ['Various Google Alerts', '10H', 2],
-        ['Hangouts', '10H', 5],
-        ['MS Teams', '10H', 18],
-        ['Sleep As Android', '10H', 1],
-        ['Amazon Shopping', '11H', 1],
-        ['Android Messages', '11H', 1],
-        ['Google Mobile Services', '11H', 1],
-        ['Hangouts', '11H', 6],
-        ['MS Teams', '11H', 25],
-        ['Google Calendar', '12H', 1],
-        ['Various Google Alerts', '12H', 2],
-        ['Hangouts', '12H', 1],
-        ['AutoRemote', '12H', 2],
-        ['MS Teams', '12H', 5],
-        ['Telegram', '12H', 3],
-        ['Call Recorder', '13H', 1],
-        ['Phone App', '13H', 1],
-        ['Google Mobile Services', '13H', 2],
-        ['Various Google Alerts', '13H', 2],
-        ['Hangouts', '13H', 1],
-        ['MS Teams', '13H', 1],
-        ['Telegram', '13H', 1],
-        ['Various Google Alerts', '14H', 2],
-        ['MS Teams', '14H', 17],
-        ['MarcoPolo', '15H', 1],
-        ['Various Google Alerts', '15H', 1],
-        ['AutoRemote', '15H', 4],
-        ['MS Teams', '15H', 10],
-        ['Bible App', '15H', 1],
-        ['MarcoPolo', '16H', 14],
-        ['Accuweather', '16H', 2],
-        ['Various Google Alerts', '16H', 1],
-        ['MS Teams', '16H', 4],
-        ['Netflix', '16H', 1],
-        ['Accuweather', '17H', 3],
-        ['Google Calendar', '17H', 1],
-        ['AutoRemote', '17H', 1],
-        ['MS Teams', '17H', 2],
-        ['TSheets', '17H', 2],
-        ['MarcoPolo', '18H', 3],
-        ['Accuweather', '18H', 3],
-        ['Various Google Alerts', '18H', 1],
-        ['MS Teams', '18H', 1],
-        ['Weather Radar App', '18H', 1],
-        ['Twitter', '18H', 1],
-        ['Various Google Alerts', '19H', 1],
-        ['Hangouts', '19H', 2],
-        ['AutoRemote', '19H', 3],
-        ['Telegram', '19H', 3],
-        ['MarcoPolo', '20H', 3],
-        ['Google Fit', '20H', 1],
-        ['Hangouts', '20H', 1],
-        ['AutoRemote', '20H', 3],
-        ['Weather Radar App', '20H', 1],
-        ['Telegram', '20H', 3],
-        ['Various Google Alerts', '21H', 1],
-        ['AutoRemote', '21H', 1],
-        ['MarcoPolo', '22H', 2],
-        ['Various Google Alerts', '22H', 2],
-        ['Hangouts', '22H', 1],
-        ['AutoRemote', '22H', 2],
-        ['Weather Radar App', '22H', 1],
-        ['Various Google Alerts', '23H', 1],
-    ];
+    function setUpDataSets() {
+        rawDataSets = [
+            {
+                title: "Select a Dataset",
+                data: [
+                    ['', '', 0],
+                ]
+            },
+            {
+                title: "Notifications from 1 Day, From App to Hour of Day | 04/22/2020",
+                data: [
+                    ['Various Google Alerts', '00H', 3],
+                    ['Sleep As Android', '00H', 1],
+                    ['Telegram', '00H', 1],
+                    ['Accuweather', '01H', 1],
+                    ['ATs Weather', '01H', 1],
+                    ['Various Google Alerts', '02H', 1],
+                    ['Golf Game', '02H', 1],
+                    ['Weather Radar App', '02H', 1],
+                    ['Various Google Alerts', '03H', 1],
+                    ['Twitter', '03H', 1],
+                    ['Various Google Alerts', '04H', 2],
+                    ['Various Google Alerts', '05H', 2],
+                    ['Phone Clock App', '05H', 1],
+                    ['Google Clock App', '06H', 1],
+                    ['Various Google Alerts', '06H', 1],
+                    ['Telegram', '06H', 2],
+                    ['Google Clock App', '07H', 1],
+                    ['Various Google Alerts', '07H', 2],
+                    ['Twitter', '07H', 1],
+                    ['Sleep As Android', '07H', 1],
+                    ['Various Google Alerts', '08H', 1],
+                    ['MS Teams', '08H', 3],
+                    ['Sleep As Android', '08H', 2],
+                    ['Google Photos', '09H', 1],
+                    ['Google Calendar', '09H', 1],
+                    ['Google Mobile Services', '09H', 1],
+                    ['Various Google Alerts', '09H', 1],
+                    ['Amazon Photos', '10H', 2],
+                    ['Google Mobile Services', '10H', 1],
+                    ['Various Google Alerts', '10H', 2],
+                    ['Hangouts', '10H', 5],
+                    ['MS Teams', '10H', 18],
+                    ['Sleep As Android', '10H', 1],
+                    ['Amazon Shopping', '11H', 1],
+                    ['Android Messages', '11H', 1],
+                    ['Google Mobile Services', '11H', 1],
+                    ['Hangouts', '11H', 6],
+                    ['MS Teams', '11H', 25],
+                    ['Google Calendar', '12H', 1],
+                    ['Various Google Alerts', '12H', 2],
+                    ['Hangouts', '12H', 1],
+                    ['AutoRemote', '12H', 2],
+                    ['MS Teams', '12H', 5],
+                    ['Telegram', '12H', 3],
+                    ['Call Recorder', '13H', 1],
+                    ['Phone App', '13H', 1],
+                    ['Google Mobile Services', '13H', 2],
+                    ['Various Google Alerts', '13H', 2],
+                    ['Hangouts', '13H', 1],
+                    ['MS Teams', '13H', 1],
+                    ['Telegram', '13H', 1],
+                    ['Various Google Alerts', '14H', 2],
+                    ['MS Teams', '14H', 17],
+                    ['MarcoPolo', '15H', 1],
+                    ['Various Google Alerts', '15H', 1],
+                    ['AutoRemote', '15H', 4],
+                    ['MS Teams', '15H', 10],
+                    ['Bible App', '15H', 1],
+                    ['MarcoPolo', '16H', 14],
+                    ['Accuweather', '16H', 2],
+                    ['Various Google Alerts', '16H', 1],
+                    ['MS Teams', '16H', 4],
+                    ['Netflix', '16H', 1],
+                    ['Accuweather', '17H', 3],
+                    ['Google Calendar', '17H', 1],
+                    ['AutoRemote', '17H', 1],
+                    ['MS Teams', '17H', 2],
+                    ['TSheets', '17H', 2],
+                    ['MarcoPolo', '18H', 3],
+                    ['Accuweather', '18H', 3],
+                    ['Various Google Alerts', '18H', 1],
+                    ['MS Teams', '18H', 1],
+                    ['Weather Radar App', '18H', 1],
+                    ['Twitter', '18H', 1],
+                    ['Various Google Alerts', '19H', 1],
+                    ['Hangouts', '19H', 2],
+                    ['AutoRemote', '19H', 3],
+                    ['Telegram', '19H', 3],
+                    ['MarcoPolo', '20H', 3],
+                    ['Google Fit', '20H', 1],
+                    ['Hangouts', '20H', 1],
+                    ['AutoRemote', '20H', 3],
+                    ['Weather Radar App', '20H', 1],
+                    ['Telegram', '20H', 3],
+                    ['Various Google Alerts', '21H', 1],
+                    ['AutoRemote', '21H', 1],
+                    ['MarcoPolo', '22H', 2],
+                    ['Various Google Alerts', '22H', 2],
+                    ['Hangouts', '22H', 1],
+                    ['AutoRemote', '22H', 2],
+                    ['Weather Radar App', '22H', 1],
+                    ['Various Google Alerts', '23H', 1],
+                ]
+            },
+            {
+                title: "Notifications from 1 Day, From App to Hour of Day | 04/23/2020",
+                data: [
+                    ['Various Google Alerts', '00H', 3],
+                    ['Sleep As Android', '00H', 1],
+                    ['Telegram', '00H', 1],
+                    ['Accuweather', '01H', 1],
+                    ['ATs Weather', '01H', 1],
+                    ['Various Google Alerts', '02H', 1],
+                    ['Golf Game', '02H', 1],
+                    ['Weather Radar App', '02H', 1],
+                    ['Various Google Alerts', '03H', 1],
+                    ['Twitter', '03H', 1],
+                    ['Various Google Alerts', '04H', 2],
+                    ['Various Google Alerts', '05H', 2],
+                    ['Phone Clock App', '05H', 1],
+                    ['Google Clock App', '06H', 1],
+                    ['Various Google Alerts', '06H', 1],
+                    ['Telegram', '06H', 2],
+                    ['Google Clock App', '07H', 1],
+                    ['Various Google Alerts', '07H', 2],
+                    ['Twitter', '07H', 1],
+                    ['Sleep As Android', '07H', 1],
+                    ['Various Google Alerts', '08H', 1],
+                    ['MS Teams', '08H', 3],
+                    ['Sleep As Android', '08H', 2],
+                    ['Google Photos', '09H', 1],
+                    ['Google Calendar', '09H', 1],
+                    ['Google Mobile Services', '09H', 1],
+                    ['Various Google Alerts', '09H', 1],
+                    ['Amazon Photos', '10H', 2],
+                    ['Google Mobile Services', '10H', 1],
+                    ['Various Google Alerts', '10H', 2],
+                    ['Hangouts', '10H', 5],
+                    ['MS Teams', '10H', 18],
+                    ['Sleep As Android', '10H', 1],
+                    ['Amazon Shopping', '11H', 1],
+                    ['Android Messages', '11H', 1],
+                    ['Google Mobile Services', '11H', 1],
+                    ['Hangouts', '11H', 6],
+                    ['MS Teams', '11H', 25],
+                    ['Google Calendar', '12H', 1],
+                    ['Various Google Alerts', '12H', 2],
+                    ['Hangouts', '12H', 1],
+                    ['AutoRemote', '12H', 2],
+                    ['MS Teams', '12H', 5],
+                    ['Telegram', '12H', 3],
+                    ['Call Recorder', '13H', 1],
+                    ['Phone App', '13H', 1],
+                    ['Google Mobile Services', '13H', 2],
+                    ['Various Google Alerts', '13H', 2],
+                    ['Hangouts', '13H', 1],
+                    ['MS Teams', '13H', 1],
+                    ['Telegram', '13H', 1],
+                    ['Various Google Alerts', '14H', 2],
+                    ['MS Teams', '14H', 17],
+                    ['MarcoPolo', '15H', 1],
+                    ['Various Google Alerts', '15H', 1],
+                    ['AutoRemote', '15H', 4],
+                    ['MS Teams', '15H', 10],
+                    ['Bible App', '15H', 1],
+                    ['MarcoPolo', '16H', 14],
+                    ['Accuweather', '16H', 2],
+                    ['Various Google Alerts', '16H', 1],
+                    ['MS Teams', '16H', 4],
+                    ['Netflix', '16H', 1],
+                    ['Accuweather', '17H', 3],
+                    ['Google Calendar', '17H', 1],
+                    ['AutoRemote', '17H', 1],
+                    ['MS Teams', '17H', 2],
+                    ['TSheets', '17H', 2],
+                    ['MarcoPolo', '18H', 3],
+                    ['Accuweather', '18H', 3],
+                    ['Various Google Alerts', '18H', 1],
+                    ['MS Teams', '18H', 1],
+                    ['Weather Radar App', '18H', 1],
+                    ['Twitter', '18H', 1],
+                    ['Various Google Alerts', '19H', 100],
+                    ['Hangouts', '19H', 2],
+                    ['AutoRemote', '19H', 3],
+                    ['Telegram', '19H', 3],
+                    ['MarcoPolo', '20H', 3],
+                    ['Google Fit', '20H', 1],
+                    ['Hangouts', '20H', 1],
+                    ['AutoRemote', '20H', 3],
+                    ['Weather Radar App', '20H', 1],
+                    ['Telegram', '20H', 3],
+                    ['Various Google Alerts', '21H', 1],
+                    ['AutoRemote', '21H', 1],
+                    ['MarcoPolo', '22H', 2],
+                    ['Various Google Alerts', '22H', 2],
+                    ['Hangouts', '22H', 1],
+                    ['AutoRemote', '22H', 2],
+                    ['Weather Radar App', '22H', 1],
+                    ['Various Google Alerts', '23H', 1],
+                ]
+            },
+        ];
 
-    var sourceTotals = {};
+        setUpSelections();
+    }
 
-    for (var i = 0; i < rawData.length; i++) {
-        var item = rawData[i],
-            key = item[0];
-        if (sourceTotals.hasOwnProperty(key)) {
-            sourceTotals[key] += item[2];
-        }
-        else {
-            sourceTotals[key] = item[2];
+    function setUpSelections() {
+        optionsSelect = document.getElementById('datasets');
+
+        optionsSelect.innerHTML = "";
+        
+        for (let index = 0; index < rawDataSets.length; index++) {
+            const opt = document.createElement("option");
+
+            opt.text = rawDataSets[index].title;
+            opt.value = index;
+
+            optionsSelect.add(opt);
         }
     }
 
-    var destTotals = {};
+    function setUpTotalsAndLabels(index) {
+        var sourceTotals = {};
 
-    for (var i = 0; i < rawData.length; i++) {
-        var item = rawData[i],
-            key = item[1];
-        if (destTotals.hasOwnProperty(key)) {
-            destTotals[key] += item[2];
+        for (var i = 0; i < rawDataSets[index].data.length; i++) {
+            var item = rawDataSets[index].data[i],
+                key = item[0];
+            if (sourceTotals.hasOwnProperty(key)) {
+                sourceTotals[key] += item[2];
+            }
+            else {
+                sourceTotals[key] = item[2];
+            }
         }
-        else {
-            destTotals[key] = item[2];
+
+        var destTotals = {};
+
+        for (var i = 0; i < rawDataSets[index].data.length; i++) {
+            var item = rawDataSets[index].data[i],
+                key = item[1];
+            if (destTotals.hasOwnProperty(key)) {
+                destTotals[key] += item[2];
+            }
+            else {
+                destTotals[key] = item[2];
+            }
         }
+
+        rawDataSets[index].data.forEach(function (d) {
+            d[0] = d[0] + " (" + sourceTotals[d[0]] + ")";
+            d[1] = d[1] + " (" + destTotals[d[1]] + ")";
+        });
     }
 
-    rawData.forEach( function(d) {
-        d[0] = d[0] + " (" + sourceTotals[d[0]] + ")";
-        d[1] = d[1] + " (" + destTotals[d[1]] + ")";
-    });
+    function drawChart(index) {
+        setUpTotalsAndLabels(index);
 
-    function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'From');
         data.addColumn('string', 'To');
         data.addColumn('number', 'Weight');
-        data.addRows(rawData);
+        data.addRows(rawDataSets[index].data);
 
         var options = {
             width: 800,
@@ -162,6 +308,29 @@
         var chart = new google.visualization.Sankey(document.getElementById('sankey_Notifications'));
         chart.draw(data, options);
     }
+
+    function datasetChanged(index) {
+        document.getElementById('datasetText').value = JSON.stringify(rawDataSets[index], null, '\t');
+        var titleHeader = document.getElementById('titleHeader');
+
+        titleHeader.innerText = rawDataSets[index].title;
+
+        drawChart(Number(index));
+    }
+
+    function updateDiagram() {
+        var datasetText = document.getElementById('datasetText')
+
+        rawDataSets.push(JSON.parse(datasetText.value));
+
+        setUpSelections();
+
+        const index = rawDataSets.length - 1;
+
+        document.getElementById('datasets').value = index;
+
+        drawChart(Number(index));
+    }
+
+    google.charts.load('current', { 'packages': ['sankey'] });
 </script>
-<h1 style="font-family: Arial, Helvetica, sans-serif;">Notifications from 1 Day, From App to Hour of Day</h1>
-<div id="sankey_Notifications" style="width: 90%; height: 90%;"></div>
