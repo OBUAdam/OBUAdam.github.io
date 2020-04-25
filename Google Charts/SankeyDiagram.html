@@ -125,7 +125,8 @@
                     ['AutoRemote', '22H', 2],
                     ['Weather Radar App', '22H', 1],
                     ['Various Google Alerts', '23H', 1],
-                ]
+                ],
+                dataWithLabels: [],
             },
         ];
 
@@ -174,20 +175,28 @@
             }
         }
 
+        rawDataSets[index].dataWithLabels = [];
+
+        for (let i = 0; i < rawDataSets[index].data.length; i++) {
+            rawDataSets[index].dataWithLabels.push
+        }
+
         rawDataSets[index].data.forEach(function (d) {
-            d[0] = d[0] + " (" + sourceTotals[d[0]] + ")";
-            d[1] = d[1] + " (" + destTotals[d[1]] + ")";
+            var labeled = [d[0] + " (" + sourceTotals[d[0]] + ")", d[1] + " (" + destTotals[d[1]] + ")", d[2]];
+
+            rawDataSets[index].dataWithLabels.push(labeled)
         });
     }
 
     function drawChart(index) {
         setUpTotalsAndLabels(index);
-
+        
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'From');
         data.addColumn('string', 'To');
         data.addColumn('number', 'Weight');
-        data.addRows(rawDataSets[index].data);
+        data.addRows(rawDataSets[index].dataWithLabels);
+        data.sort([{ column: 1 }]);
 
         var options = {
             width: 800,
@@ -205,20 +214,28 @@
             }
         };
 
-        data.sort([{ column: 1 }]);
-
         // Instantiates and draws our chart, passing in some options.
         var chart = new google.visualization.Sankey(document.getElementById('sankey_Notifications'));
         chart.draw(data, options);
     }
 
     function datasetChanged(index) {
-        document.getElementById('datasetText').value = JSON.stringify(rawDataSets[index], null, '\t');
-        var titleHeader = document.getElementById('titleHeader');
+        if (index > 0) {
+            document.getElementById('datasetText').value = JSON.stringify(rawDataSets[index], null, ' ');
+            var titleHeader = document.getElementById('titleHeader');
 
-        titleHeader.innerText = rawDataSets[index].title;
+            titleHeader.innerText = rawDataSets[index].title;
 
-        drawChart(Number(index));
+            drawChart(Number(index));
+
+            document.getElementById('sankey_Notifications').style.display = "block";
+        } else {
+            var titleHeader = document.getElementById('titleHeader');
+
+            titleHeader.innerText = "";
+
+            document.getElementById('sankey_Notifications').style.display = "none";
+        }
     }
 
     function updateDiagram() {
@@ -233,6 +250,8 @@
         document.getElementById('datasets').value = index;
 
         drawChart(Number(index));
+
+        document.getElementById('sankey_Notifications').style.display = "block";
     }
 
     google.charts.load('current', { 'packages': ['sankey'] });
