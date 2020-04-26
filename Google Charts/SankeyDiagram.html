@@ -12,6 +12,27 @@
             <select id="datasets" onchange="datasetChanged(this.value)" style="width: 100%;"></select>
             <textarea id="datasetText" style="width: 100%; height: 50%; white-space: nowrap;"></textarea>
             <button onclick="updateDiagram()">Update Diagram</button>
+            <div>
+                Height: <input id="height" type="number" onchange="chartPropertyChanged()" value="600"></input> px
+            </div>
+            <div>
+                Width: <input id="width" type="number" onchange="chartPropertyChanged()" value="600"></input> px
+            </div>
+            <div>
+                Iterations: <input id="iterations" type="number" onchange="chartPropertyChanged()" value="0"></input> (only 0 will keep sorting.)
+            </div>
+            <div>Link</div>
+            <div>
+                Link Color Mode: <select id="linkColorModes" onchange="chartPropertyChanged()">
+                    <option value="source">Source</option>
+                    <option value="target">Target</option>
+                    <option value="gradient">Gradient</option>
+                    <option value="none">None</option>
+                </select>
+            </div>
+            <div>node</div>
+            <div>nodeColorMode</div>
+            <div>tooltip</div>
         </div>
         <div id="sankey_Notifications" style="margin-left: 20%; width: 80%;"></div>
     </div>
@@ -199,10 +220,10 @@
         data.sort([{ column: 1 }]);
 
         var options = {
-            width: 800,
-            height: 800,
+            height: document.getElementById('height').value,
+            width: document.getElementById('width').value,
             sankey: {
-                iterations: 0,
+                iterations: document.getElementById('iterations').value,
                 node: {
                     width: 25, colorMode: 'unique',
                     label: {
@@ -210,7 +231,7 @@
                     },
                     nodePadding: 10
                 },
-                link: { colorMode: 'source' }
+                link: { colorMode: document.getElementById('linkColorModes').value }
             }
         };
 
@@ -254,6 +275,10 @@
         drawChart(Number(index));
 
         document.getElementById('sankey_Notifications').style.display = "block";
+    }
+
+    function chartPropertyChanged() {
+        drawChart(document.getElementById('datasets').value);
     }
 
     google.charts.load('current', { 'packages': ['sankey'] });
