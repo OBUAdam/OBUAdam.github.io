@@ -19,20 +19,60 @@
                 Width: <input id="width" type="number" onchange="chartPropertyChanged()" value="600"></input> px
             </div>
             <div>
-                Iterations: <input id="iterations" type="number" onchange="chartPropertyChanged()" value="0"></input> (only 0 will keep sorting.)
+                Iterations: <input id="iterations" type="number" onchange="chartPropertyChanged()" value="0"></input>
+                (only 0 will keep sorting.)
             </div>
-            <div>Link</div>
             <div>
-                Link Color Mode: <select id="linkColorModes" onchange="chartPropertyChanged()">
-                    <option value="source">Source</option>
-                    <option value="target">Target</option>
-                    <option value="gradient">Gradient</option>
-                    <option value="none">None</option>
-                </select>
+                Link
+                <div>
+                    Fill Color: <input id="linkColor" type="color" onchange="chartPropertyChanged()"></input>
+                    Fill Opacity: <input id="linkOpacity" type="number" onchange="chartPropertyChanged()" min="0"
+                        max="100" value=80></input>
+                    Stoke Color: <input id="linkStrokeColor" type="color" onchange="chartPropertyChanged()"></input>
+                    Stroke Width: <input id="linkStrokeWidth" type="number" onchange="chartPropertyChanged() "
+                        value="1"></input>
+                </div>
+                <div>
+                    Link Color Mode: <select id="linkColorMode" onchange="chartPropertyChanged()">
+                        <option value="source">Source</option>
+                        <option value="target">Target</option>
+                        <option value="gradient">Gradient</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                <div>
+                    Link Colors: <textarea id="linkColors" style="white-space: nowrap;">
+["#a6cee3",
+"#1f78b4",
+"#b2df8a",
+"#33a02c"]
+                    </textarea>
+                </div>
             </div>
-            <div>node</div>
-            <div>nodeColorMode</div>
-            <div>tooltip</div>
+            <div>
+                Node
+                <div>
+                    Label
+                    <div>
+                        Font Size: <input id="nodeFontSize" type="number" onchange="chartPropertyChanged() "
+                            value="12"></input>
+                        Font Color: <input id="nodeFontColor" type="color" onchange="chartPropertyChanged()"></input>
+                        <input id="nodeFontBold" type="checkbox" onchange="chartPropertyChanged()">Bold: </input>
+                        <input id="nodeFontItalic" type="checkbox" onchange="chartPropertyChanged()">Italic: </input>
+                    </div>
+                    <input id="nodeInteractive" type="checkbox" onchange="chartPropertyChanged()"
+                        checked="true">Interactive: </input>
+                    Width: <input id="nodeWidth" type="number" onchange="chartPropertyChanged() " value="10"></input>
+                </div>
+                <div>
+                    Node Colors: <textarea id="nodeColors" style="white-space: nowrap;">
+["#a6cee3",
+"#1f78b4",
+"#b2df8a",
+"#33a02c"]
+                    </textarea>
+                </div>
+            </div>
         </div>
         <div id="sankey_Notifications" style="margin-left: 20%; width: 80%;"></div>
     </div>
@@ -40,7 +80,7 @@
 
 <script>
     setUpDataSets();
-    
+
     var rawDataSets;
 
     function setUpDataSets() {
@@ -158,7 +198,7 @@
         optionsSelect = document.getElementById('datasets');
 
         optionsSelect.innerHTML = "";
-        
+
         for (let index = 0; index < rawDataSets.length; index++) {
             const opt = document.createElement("option");
 
@@ -225,15 +265,46 @@
             sankey: {
                 iterations: document.getElementById('iterations').value,
                 node: {
-                    width: 25, colorMode: 'unique',
+                    width: document.getElementById('nodeWidth').value,
                     label: {
-                        bold: true
+                        color: document.getElementById('nodeFontColor').value,
+                        fontSize: document.getElementById('nodeFontSize').value,
+                        bold: document.getElementById('nodeFontBold').checked,
+                        italic: document.getElementById('nodeFontItalic').checked
                     },
-                    nodePadding: 10
+                    nodePadding: 10,
+                    interactivity: document.getElementById('nodeInteractive').checked
                 },
-                link: { colorMode: document.getElementById('linkColorModes').value }
+                link: {
+                }
             }
         };
+
+        if (!document.getElementById('nodeColors') || !document.getElementById('nodeColors').value) {
+            options.sankey.node.colorMode = 'unique';
+        }
+        else {
+            options.sankey.node.colors = JSON.parse(document.getElementById('nodeColors').value)
+        }
+
+        const linkColors = document.getElementById('linkColors');
+        const linkColorMode = document.getElementById('linkColorMode');
+        const linkSingleColor = document.getElementById('linkColor');
+        const linkOpacity = document.getElementById('linkOpacity');
+        const linkStrokeColor = document.getElementById('linkStrokeColor');
+        const linkStrokeWidth = document.getElementById('linkStrokeWidth');
+
+        if (linkColors && linkColors.value) {
+            const parsedColors = JSON.parse(linkColors.value)
+            options.sankey.link.colors = parsedColors;
+            options.sankey.link.colorMode = linkColorMode.value;
+        } else {
+            options.sankey.link.color = {};
+            options.sankey.link.color.fill = linkSingleColor.value;
+            options.sankey.link.color.fillOpacity= Number(linkOpacity.value)/100;
+            options.sankey.link.color.stroke = linkStrokeColor.value;
+            options.sankey.link.color.strokeWidth = linkStrokeWidth.value;
+        }
 
         // Instantiates and draws our chart, passing in some options.
         var chart = new google.visualization.Sankey(document.getElementById('sankey_Notifications'));
